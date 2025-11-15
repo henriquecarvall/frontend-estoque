@@ -1,0 +1,56 @@
+<div class="form-container">
+  <h2>➕ Adicionar Novo Produto</h2>
+
+  <form (ngSubmit)="adicionarProduto()" #produtoForm="ngForm" class="produto-form">
+    <div class="form-group">
+      <label for="nome">Nome do Produto:</label>
+      <input type="text" id="nome" [(ngModel)]="produto.nome" name="nome" required minlength="2" #nome="ngModel">
+      <div class="erro" *ngIf="nome.invalid && (nome.dirty || nome.touched)">
+        <div *ngIf="nome.errors?.['required']">Nome é obrigatório</div>
+        <div *ngIf="nome.errors?.['minlength']">Nome deve ter pelo menos 2 caracteres</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="quantidade">Quantidade em Estoque:</label>
+      <input type="number" id="quantidade" [(ngModel)]="produto.quantidade" name="quantidade" min="0" required #quantidade="ngModel">
+      <div class="erro" *ngIf="quantidade.invalid && (quantidade.dirty || quantidade.touched)">
+        <div *ngIf="quantidade.errors?.['required']">Quantidade é obrigatória</div>
+        <div *ngIf="quantidade.errors?.['min']">Quantidade não pode ser negativa</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="preco">Preço (R$):</label>
+      <input type="number" id="preco" [(ngModel)]="produto.preco" name="preco" step="0.01" min="0" required #preco="ngModel">
+      <div class="erro" *ngIf="preco.invalid && (preco.dirty || preco.touched)">
+        <div *ngIf="preco.errors?.['required']">Preço é obrigatório</div>
+        <div *ngIf="preco.errors?.['min']">Preço não pode ser negativo</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="categoria">Categoria:</label>
+      <select id="categoria" [(ngModel)]="produto.categoria" name="categoria" required #categoria="ngModel">
+        <option value="">Selecione...</option>
+        <option value="eletronicos">Eletrônicos</option>
+        <option value="informatica">Informática</option>
+        <option value="escritorio">Escritório</option>
+        <option value="outros">Outros</option>
+      </select>
+      <div class="erro" *ngIf="categoria.invalid && (categoria.dirty || categoria.touched)">
+        <div *ngIf="categoria.errors?.['required']">Categoria é obrigatória</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="descricao">Descrição:</label>
+      <textarea id="descricao" [(ngModel)]="produto.descricao" name="descricao" rows="3"></textarea>
+    </div>
+
+    <div class="form-buttons">
+      <button type="submit" class="btn-salvar" [disabled]="produtoForm.invalid">💾 Salvar Produto</button>
+      <button type="button" class="btn-voltar" routerLink="/">↩️ Voltar</button>
+    </div>
+  </form>
+</div>

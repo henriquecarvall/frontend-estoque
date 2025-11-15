@@ -1,0 +1,113 @@
+.produtos-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.busca-container {
+  margin: 20px 0;
+}
+
+.campo-busca {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.campo-busca:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 5px rgba(25, 118, 210, 0.3);
+}
+
+.tabela-produtos {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.tabela-produtos th, .tabela-produtos td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.tabela-produtos th {
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tabela-produtos th:hover {
+  background-color: #1565c0;
+}
+
+.ordenavel {
+  position: relative;
+}
+
+.seta {
+  margin-left: 5px;
+  font-weight: bold;
+}
+
+.tabela-produtos tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.acoes {
+  display: flex;
+  gap: 5px;
+}
+
+.btn-editar {
+  background: #ffc107;
+  color: black;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-editar:hover {
+  background: #e0a800;
+}
+
+.btn-excluir {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-excluir:hover {
+  background: #c82333;
+}
+
+.sem-resultados {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+.btn-voltar {
+  background: #666;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-voltar:hover {
+  background: #555;
+}
