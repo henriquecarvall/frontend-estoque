@@ -1,0 +1,47 @@
+{
+  "produtos": [
+    {
+      "id": 1,
+      "nome": "Notebook Dell",
+      "quantidade": 15,
+      "preco": 2500.00,
+      "categoria": "eletronicos",
+      "descricao": "Notebook Dell i5 8GB RAM",
+      "imagem": ""
+    },
+    {
+      "id": 2,
+      "nome": "Mouse Logitech",
+      "quantidade": 50,
+      "preco": 45.00,
+      "categoria": "informatica",
+      "descricao": "Mouse sem fio Logitech",
+      "imagem": ""
+    }
+  ],
+  "usuarios": [
+    {
+      "id": 1,
+      "email": "admin@estoque.com",
+      "senha": "123456",
+      "nome": "Administrador"
+    }
+  ],
+  "categorias": [
+    {
+      "id": 1,
+      "nome": "Eletrônicos",
+      "slug": "eletronicos"
+    },
+    {
+      "id": 2,
+      "nome": "Informática",
+      "slug": "informatica"
+    },
+    {
+      "id": 3,
+      "nome": "Escritório",
+      "slug": "escritorio"
+    }
+  ]
+}

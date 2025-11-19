@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ProdutoService } from '../services/produto.service';
 import { Router } from '@angular/router';
+import { ProdutoService, Produto } from '../services/produto.service';
 import { ToastService } from '../services/toast.service';
 
 @Component({
@@ -9,11 +9,12 @@ templateUrl: './produtos.component.html',
 styleUrls: ['./produtos.component.css']
 })
 export class ProdutosComponent implements OnInit {
-produtos: any[] = [];
-produtosFiltrados: any[] = [];
+produtos: Produto[] = [];
+produtosFiltrados: Produto[] = [];
 termoBusca: string = '';
 colunaOrdenada: string = 'id';
 ordemAscendente: boolean = true;
+carregando: boolean = true;
 
 constructor(
     private produtoService: ProdutoService,
@@ -21,13 +22,40 @@ constructor(
     private toastService: ToastService
   ) {}
 
-  ngOnInit() {
-    this.produtos = this.produtoService.getProdutos();
-    this.produtosFiltrados = this.produtos;
-    this.ordenarPor('id');
+  ngOnInit(): void {
+    this.carregarProdutos();
   }
 
-  ordenarPor(coluna: string) {
+  carregarProdutos(): void {
+    this.carregando = true;
+    this.produtoService.getProdutos().subscribe({
+      next: (produtos) => {
+        this.produtos = produtos;
+        this.produtosFiltrados = produtos;
+        this.carregando = false;
+      },
+      error: () => {
+        this.toastService.show('Erro ao carregar produtos', 'error');
+        this.carregando = false;
+      }
+    });
+  }
+
+  filtrarProdutos(): void {
+    if (!this.termoBusca) {
+      this.produtosFiltrados = this.produtos;
+      return;
+    }
+
+    const termo = this.termoBusca.toLowerCase();
+    this.produtosFiltrados = this.produtos.filter(produto =>
+      produto.nome.toLowerCase().includes(termo) ||
+      produto.categoria.toLowerCase().includes(termo) ||
+      produto.codigo.toLowerCase().includes(termo)
+    );
+  }
+
+  ordenarPor(coluna: string): void {
     if (this.colunaOrdenada === coluna) {
       this.ordemAscendente = !this.ordemAscendente;
     } else {
@@ -36,47 +64,30 @@ constructor(
     }
 
     this.produtosFiltrados.sort((a, b) => {
-      let valorA = a[coluna];
-      let valorB = b[coluna];
+      const valorA = a[coluna as keyof Produto];
+      const valorB = b[coluna as keyof Produto];
 
-      if (typeof valorA === 'string') {
-        valorA = valorA.toLowerCase();
-        valorB = valorB.toLowerCase();
-      }
-
-      if (valorA < valorB) {
-        return this.ordemAscendente ? -1 : 1;
-      }
-      if (valorA > valorB) {
-        return this.ordemAscendente ? 1 : -1;
-      }
+      if (valorA < valorB) return this.ordemAscendente ? -1 : 1;
+      if (valorA > valorB) return this.ordemAscendente ? 1 : -1;
       return 0;
     });
   }
 
-  filtrarProdutos() {
-    if (!this.termoBusca) {
-      this.produtosFiltrados = this.produtos;
-    } else {
-      const termo = this.termoBusca.toLowerCase();
-      this.produtosFiltrados = this.produtos.filter(produto =>
-        produto.nome.toLowerCase().includes(termo) ||
-        produto.categoria.toLowerCase().includes(termo)
-      );
-    }
-    this.ordenarPor(this.colunaOrdenada);
-  }
-
-  editarProduto(id: number) {
+  editarProduto(id: number): void {
     this.router.navigate(['/editar-produto', id]);
   }
 
-  excluirProduto(id: number) {
+  excluirProduto(id: number): void {
     if (confirm('Tem certeza que deseja excluir este produto?')) {
-      this.produtoService.excluirProduto(id);
-      this.produtos = this.produtoService.getProdutos();
-      this.filtrarProdutos();
-      this.toastService.success('Produto excluído com sucesso!');
+      this.produtoService.excluirProduto(id).subscribe({
+        next: () => {
+          this.toastService.show('Produto excluído com sucesso', 'success');
+          this.carregarProdutos();
+        },
+        error: () => {
+          this.toastService.show('Erro ao excluir produto', 'error');
+        }
+      });
     }
   }
 }

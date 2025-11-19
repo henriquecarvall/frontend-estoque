@@ -1,51 +1,57 @@
 <div class="produtos-container">
   <h2>📦 Lista de Produtos</h2>
 
-  <div class="busca-container">
-    <input
-      type="text"
-      placeholder="🔍 Buscar produto..."
-      [(ngModel)]="termoBusca"
-      (input)="filtrarProdutos()"
-      class="campo-busca">
+  <div class="loading" *ngIf="carregando">
+    Carregando produtos...
   </div>
 
-  <table class="tabela-produtos">
-    <thead>
-    <tr>
-      <th (click)="ordenarPor('id')" class="ordenavel">
-        ID <span class="seta">{{ colunaOrdenada === 'id' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
-      </th>
-      <th (click)="ordenarPor('nome')" class="ordenavel">
-        Nome <span class="seta">{{ colunaOrdenada === 'nome' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
-      </th>
-      <th (click)="ordenarPor('quantidade')" class="ordenavel">
-        Quantidade <span class="seta">{{ colunaOrdenada === 'quantidade' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
-      </th>
-      <th (click)="ordenarPor('preco')" class="ordenavel">
-        Preço <span class="seta">{{ colunaOrdenada === 'preco' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
-      </th>
-      <th>Categoria</th>
-      <th>Ações</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let produto of produtosFiltrados">
-      <td>{{ produto.id }}</td>
-      <td>{{ produto.nome }}</td>
-      <td>{{ produto.quantidade }}</td>
-      <td>R$ {{ produto.preco.toFixed(2) }}</td>
-      <td>{{ produto.categoria }}</td>
-      <td class="acoes">
-        <button class="btn-editar" (click)="editarProduto(produto.id)">✏️ Editar</button>
-        <button class="btn-excluir" (click)="excluirProduto(produto.id)">🗑️ Excluir</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div *ngIf="!carregando">
+    <div class="busca-container">
+      <input
+        type="text"
+        placeholder="🔍 Buscar produto..."
+        [(ngModel)]="termoBusca"
+        (input)="filtrarProdutos()"
+        class="campo-busca">
+    </div>
 
-  <div *ngIf="produtosFiltrados.length === 0" class="sem-resultados">
-    Nenhum produto encontrado.
+    <table class="tabela-produtos">
+      <thead>
+      <tr>
+        <th (click)="ordenarPor('codigo')" class="ordenavel">
+          Código <span class="seta">{{ colunaOrdenada === 'codigo' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
+        </th>
+        <th (click)="ordenarPor('nome')" class="ordenavel">
+          Nome <span class="seta">{{ colunaOrdenada === 'nome' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
+        </th>
+        <th (click)="ordenarPor('quantidadeEstoque')" class="ordenavel">
+          Estoque <span class="seta">{{ colunaOrdenada === 'quantidadeEstoque' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
+        </th>
+        <th (click)="ordenarPor('precoUnitario')" class="ordenavel">
+          Preço <span class="seta">{{ colunaOrdenada === 'precoUnitario' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
+        </th>
+        <th>Categoria</th>
+        <th>Ações</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let produto of produtosFiltrados">
+        <td>{{ produto.codigo }}</td>
+        <td>{{ produto.nome }}</td>
+        <td>{{ produto.quantidadeEstoque }}</td>
+        <td>R$ {{ produto.precoUnitario.toFixed(2) }}</td>
+        <td>{{ produto.categoria }}</td>
+        <td class="acoes">
+          <button class="btn-editar" (click)="editarProduto(produto.id)">✏️ Editar</button>
+          <button class="btn-excluir" (click)="excluirProduto(produto.id)">🗑️ Excluir</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="produtosFiltrados.length === 0" class="sem-resultados">
+      Nenhum produto encontrado.
+    </div>
   </div>
 
   <button class="btn-voltar" routerLink="/">← Voltar para Home</button>

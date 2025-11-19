@@ -1,74 +1,41 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface Produto {
 id: number;
+codigo: string;
 nome: string;
-quantidade: number;
-preco: number;
 categoria: string;
-descricao: string;
+quantidadeEstoque: number;
+precoUnitario: number;
 }
 
 @Injectable({
 providedIn: 'root'
 })
 export class ProdutoService {
-private storageKey = 'estoque_produtos';
-private produtos: Produto[] = [];
-private nextId = 1;
+private apiUrl = 'http://localhost:8080/api/produtos';
 
-constructor() {
-    this.carregarProdutos();
+constructor(private http: HttpClient) {}
+
+  getProdutos(): Observable<Produto[]> {
+    return this.http.get<Produto[]>(this.apiUrl, { withCredentials: true });
   }
 
-  private carregarProdutos() {
-    const dados = localStorage.getItem(this.storageKey);
-    if (dados) {
-      this.produtos = JSON.parse(dados);
-      if (this.produtos.length > 0) {
-        this.nextId = Math.max(...this.produtos.map(p => p.id)) + 1;
-      }
-    } else {
-      this.produtos = [
-        { id: 1, nome: 'Notebook', quantidade: 15, preco: 2500.00, categoria: 'eletronicos', descricao: '' },
-        { id: 2, nome: 'Mouse', quantidade: 50, preco: 45.00, categoria: 'informatica', descricao: '' }
-      ];
-      this.nextId = 3;
-      this.salvarProdutos();
-    }
+  getProdutoById(id: number): Observable<Produto> {
+    return this.http.get<Produto>(`${this.apiUrl}/${id}`, { withCredentials: true });
   }
 
-  private salvarProdutos() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.produtos));
+  criarProduto(produto: any): Observable<Produto> {
+    return this.http.post<Produto>(this.apiUrl, produto, { withCredentials: true });
   }
 
-  getProdutos(): Produto[] {
-    return this.produtos;
+  atualizarProduto(id: number, produto: any): Observable<Produto> {
+    return this.http.put<Produto>(`${this.apiUrl}/${id}`, produto, { withCredentials: true });
   }
 
-  adicionarProduto(produto: Omit<Produto, 'id'>): void {
-    const novoProduto: Produto = {
-      ...produto,
-      id: this.nextId++
-    };
-    this.produtos.push(novoProduto);
-    this.salvarProdutos();
-  }
-
-  getProdutoById(id: number): Produto | undefined {
-    return this.produtos.find(p => p.id === id);
-  }
-
-  atualizarProduto(id: number, produto: Omit<Produto, 'id'>): void {
-    const index = this.produtos.findIndex(p => p.id === id);
-    if (index !== -1) {
-      this.produtos[index] = { ...produto, id };
-      this.salvarProdutos();
-    }
-  }
-
-  excluirProduto(id: number): void {
-    this.produtos = this.produtos.filter(p => p.id !== id);
-    this.salvarProdutos();
+  excluirProduto(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { withCredentials: true });
   }
 }

@@ -1,0 +1,73 @@
+<div class="usuarios-container">
+  <h2>👥 Gestão de Usuários</h2>
+
+  <div class="loading" *ngIf="carregando">
+    Carregando usuários...
+  </div>
+
+  <div *ngIf="!carregando">
+    <div class="header-actions">
+      <div class="busca-container">
+        <input
+          type="text"
+          placeholder="🔍 Buscar usuário..."
+          [(ngModel)]="termoBusca"
+          (input)="filtrarUsuarios()"
+          class="campo-busca">
+      </div>
+      <button class="btn-adicionar" routerLink="/adicionar-usuario">➕ Adicionar Usuário</button>
+    </div>
+
+    <table class="tabela-usuarios">
+      <thead>
+      <tr>
+        <th (click)="ordenarPor('id')" class="ordenavel">
+          ID <span class="seta">{{ colunaOrdenada === 'id' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
+        </th>
+        <th (click)="ordenarPor('nome')" class="ordenavel">
+          Nome <span class="seta">{{ colunaOrdenada === 'nome' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
+        </th>
+        <th (click)="ordenarPor('email')" class="ordenavel">
+          Email <span class="seta">{{ colunaOrdenada === 'email' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
+        </th>
+        <th (click)="ordenarPor('perfil')" class="ordenavel">
+          Perfil <span class="seta">{{ colunaOrdenada === 'perfil' ? (ordemAscendente ? '↑' : '↓') : '' }}</span>
+        </th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let usuario of usuariosFiltrados">
+        <td>{{ usuario.id }}</td>
+        <td>{{ usuario.nome }}</td>
+        <td>{{ usuario.email }}</td>
+        <td>
+            <span class="badge" [class.badge-admin]="usuario.perfil === 'ADMIN'"
+                  [class.badge-operador]="usuario.perfil === 'OPERADOR'">
+              {{ usuario.perfil }}
+            </span>
+        </td>
+        <td>
+          <button class="btn-status"
+                  [class.ativo]="usuario.ativo"
+                  [class.inativo]="!usuario.ativo"
+                  (click)="toggleAtivo(usuario)">
+            {{ usuario.ativo ? '✅ Ativo' : '❌ Inativo' }}
+          </button>
+        </td>
+        <td class="acoes">
+          <button class="btn-editar" (click)="editarUsuario(usuario.id)">✏️ Editar</button>
+          <button class="btn-excluir" (click)="excluirUsuario(usuario.id)">🗑️ Excluir</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="usuariosFiltrados.length === 0" class="sem-resultados">
+      Nenhum usuário encontrado.
+    </div>
+  </div>
+
+  <button class="btn-voltar" routerLink="/">← Voltar para Home</button>
+</div>

@@ -1,0 +1,171 @@
+.usuarios-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.busca-container {
+  flex: 1;
+}
+
+.campo-busca {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.btn-adicionar {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-adicionar:hover {
+  background: #218838;
+}
+
+.tabela-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tabela-usuarios th,
+.tabela-usuarios td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.tabela-usuarios th {
+  background: #f8f9fa;
+  font-weight: bold;
+  color: #333;
+}
+
+.ordenavel {
+  cursor: pointer;
+  user-select: none;
+}
+
+.ordenavel:hover {
+  background: #e9ecef;
+}
+
+.seta {
+  margin-left: 5px;
+  font-weight: bold;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.badge-admin {
+  background: #dc3545;
+}
+
+.badge-operador {
+  background: #007bff;
+}
+
+.btn-status {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.btn-status.ativo {
+  background: #d4edda;
+  color: #155724;
+}
+
+.btn-status.inativo {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-editar {
+  background: #ffc107;
+  color: #212529;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-excluir {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-editar:hover {
+  background: #e0a800;
+}
+
+.btn-excluir:hover {
+  background: #c82333;
+}
+
+.sem-resultados {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.btn-voltar {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.btn-voltar:hover {
+  background: #5a6268;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #007bff;
+}

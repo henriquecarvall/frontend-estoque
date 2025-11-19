@@ -9,6 +9,7 @@ styleUrls: ['./relatorios.component.css']
 })
 export class RelatoriosComponent implements OnInit {
 produtos: any[] = [];
+carregando: boolean = true;
 
 constructor(
     private produtoService: ProdutoService,
@@ -16,7 +17,21 @@ constructor(
   ) {}
 
   ngOnInit() {
-    this.produtos = this.produtoService.getProdutos();
+    this.carregarProdutos();
+  }
+
+  carregarProdutos(): void {
+    this.carregando = true;
+    this.produtoService.getProdutos().subscribe({
+      next: (produtos) => {
+        this.produtos = produtos;
+        this.carregando = false;
+      },
+      error: () => {
+        this.toastService.show('Erro ao carregar produtos', 'error');
+        this.carregando = false;
+      }
+    });
   }
 
   get totalProdutos() {
@@ -24,11 +39,13 @@ constructor(
   }
 
   get valorTotalEstoque() {
-    return this.produtos.reduce((total, produto) => total + (produto.preco * produto.quantidade), 0);
+    return this.produtos.reduce((total, produto) =>
+      total + (produto.precoUnitario * produto.quantidadeEstoque), 0
+    );
   }
 
   get produtosEstoqueBaixo() {
-    return this.produtos.filter(produto => produto.quantidade < 20);
+    return this.produtos.filter(produto => produto.quantidadeEstoque < 10);
   }
 
   exportarRelatorio() {
@@ -38,8 +55,12 @@ constructor(
       valorTotalEstoque: this.valorTotalEstoque,
       produtosEstoqueBaixo: this.produtosEstoqueBaixo.length,
       produtos: this.produtos.map(p => ({
-        ...p,
-        valorTotal: p.preco * p.quantidade
+        codigo: p.codigo,
+        nome: p.nome,
+        categoria: p.categoria,
+        quantidadeEstoque: p.quantidadeEstoque,
+        precoUnitario: p.precoUnitario,
+        valorTotal: p.precoUnitario * p.quantidadeEstoque
       }))
     };
 
@@ -51,6 +72,6 @@ constructor(
     link.click();
     window.URL.revokeObjectURL(url);
 
-    this.toastService.success('Relatório exportado com sucesso!');
+    this.toastService.show('Relatório exportado com sucesso!', 'success');
   }
 }

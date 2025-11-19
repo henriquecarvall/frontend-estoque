@@ -1,2 +1,29 @@
+<!-- Header com informações do usuário -->
+<header *ngIf="authService.isLoggedIn()" class="header">
+  <div class="header-content">
+    <h1>🏪 Sistema de Estoque</h1>
+    <div class="user-info">
+      <span>Olá, {{ authService.getUsuarioAtual()?.nome }}</span>
+      <span class="perfil-badge">{{ authService.getUsuarioAtual()?.perfil }}</span>
+      <button (click)="logout()" class="logout-btn">Sair</button>
+    </div>
+  </div>
+
+  <!-- Menu de navegação -->
+  <nav class="nav-menu">
+    <button routerLink="/" routerLinkActive="active">🏠 Início</button>
+
+    <!-- Menu para ADMIN -->
+    <ng-container *ngIf="authService.isAdmin()">
+      <button routerLink="/produtos" routerLinkActive="active">📦 Produtos</button>
+      <button routerLink="/usuarios" routerLinkActive="active">👥 Usuários</button>
+    </ng-container>
+
+    <!-- Menu para todos logados -->
+    <button routerLink="/relatorios" routerLinkActive="active">📊 Relatórios</button>
+  </nav>
+</header>
+
+<!-- Conteúdo das páginas -->
 <router-outlet></router-outlet>
 <app-toast></app-toast>

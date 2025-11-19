@@ -1,0 +1,40 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>🔐 Login</h2>
+    <p>Acesse o sistema de estoque</p>
+
+    <form (ngSubmit)="login()">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="seu@email.com"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha:</label>
+        <input
+          type="password"
+          id="senha"
+          [(ngModel)]="senha"
+          name="senha"
+          placeholder="Sua senha"
+          required>
+      </div>
+
+      <button type="submit" [disabled]="carregando" class="login-btn">
+        {{ carregando ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+
+    <div class="login-info">
+      <h4>Usuários de teste:</h4>
+      <p><strong>Admin:</strong> admin@estoque.com / Admin123</p>
+      <p><strong>Operador:</strong> operador@estoque.com / Operador123</p>
+    </div>
+  </div>
+</div>
