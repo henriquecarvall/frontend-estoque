@@ -1,0 +1,118 @@
+<div class="vendas-container">
+  <h2>🛒 Caixa - Nova Venda</h2>
+
+  <div class="vendas-layout">
+    <!-- Coluna da Esquerda - Produtos -->
+    <div class="produtos-section">
+      <h3>📦 Produtos Disponíveis</h3>
+
+      <div class="busca-container">
+        <input
+          type="text"
+          placeholder="🔍 Buscar produto..."
+          [(ngModel)]="termoBusca"
+          (input)="filtrarProdutos()"
+          class="campo-busca">
+      </div>
+
+      <div class="loading" *ngIf="carregando">
+        Carregando produtos...
+      </div>
+
+      <div class="produtos-grid" *ngIf="!carregando">
+        <div *ngFor="let produto of produtosFiltrados"
+             class="produto-card"
+             [class.sem-estoque]="produto.quantidadeEstoque === 0">
+          <div class="produto-info">
+            <strong>{{ produto.nome }}</strong>
+            <span class="produto-codigo">Cód: {{ produto.codigo }}</span>
+            <span class="produto-preco">R$ {{ produto.precoUnitario.toFixed(2) }}</span>
+            <span class="produto-estoque"
+                  [class.estoque-baixo]="produto.quantidadeEstoque < 10">
+              Estoque: {{ produto.quantidadeEstoque }}
+            </span>
+          </div>
+          <button
+            class="btn-adicionar"
+            (click)="adicionarAoCarrinho(produto)"
+            [disabled]="produto.quantidadeEstoque === 0">
+            {{ produto.quantidadeEstoque === 0 ? 'Sem Estoque' : '➕ Adicionar' }}
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="!carregando && produtosFiltrados.length === 0" class="sem-resultados">
+        Nenhum produto encontrado.
+      </div>
+    </div>
+
+    <!-- Coluna da Direita - Carrinho -->
+    <div class="carrinho-section">
+      <h3>🛒 Carrinho de Compras</h3>
+
+      <div class="carrinho-vazio" *ngIf="carrinhoItens.length === 0">
+        <p>Seu carrinho está vazio</p>
+        <p>Adicione produtos para iniciar uma venda</p>
+      </div>
+
+      <div class="carrinho-itens" *ngIf="carrinhoItens.length > 0">
+        <div *ngFor="let item of carrinhoItens" class="carrinho-item">
+          <div class="item-info">
+            <strong>{{ item.produto.nome }}</strong>
+            <span>R$ {{ item.produto.precoUnitario.toFixed(2) }} cada</span>
+          </div>
+
+          <div class="item-controles">
+            <div class="quantidade-controle">
+              <button (click)="atualizarQuantidade(item, item.quantidade - 1)">−</button>
+              <span>{{ item.quantidade }}</span>
+              <button (click)="atualizarQuantidade(item, item.quantidade + 1)">+</button>
+            </div>
+            <span class="item-subtotal">R$ {{ item.subtotal.toFixed(2) }}</span>
+            <button class="btn-remover" (click)="removerDoCarrinho(item.produto.id)">🗑️</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumo da Venda -->
+      <div class="resumo-venda" *ngIf="carrinhoItens.length > 0">
+        <div class="resumo-linha">
+          <span>Total de Itens:</span>
+          <span>{{ totalItens }}</span>
+        </div>
+        <div class="resumo-linha total">
+          <span>Total da Venda:</span>
+          <span>R$ {{ totalVenda.toFixed(2) }}</span>
+        </div>
+
+        <div class="valor-recebido">
+          <label for="valorRecebido">Valor Recebido (R$):</label>
+          <input
+            type="number"
+            id="valorRecebido"
+            [(ngModel)]="valorRecebido"
+            step="0.01"
+            min="0"
+            placeholder="0.00">
+        </div>
+
+        <div class="resumo-linha troco" *ngIf="valorRecebido > 0">
+          <span>Troco:</span>
+          <span>R$ {{ troco.toFixed(2) }}</span>
+        </div>
+
+        <div class="acoes-venda">
+          <button
+            class="btn-finalizar"
+            (click)="finalizarVenda()"
+            [disabled]="valorRecebido < totalVenda || finalizandoVenda">
+            {{ finalizandoVenda ? 'Processando...' : '💳 Finalizar Venda' }}
+          </button>
+          <button class="btn-limpar" (click)="limparCarrinho()">🗑️ Limpar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-voltar" routerLink="/">← Voltar para Home</button>
+</div>

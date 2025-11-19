@@ -19,6 +19,11 @@
       <button routerLink="/usuarios" routerLinkActive="active">👥 Usuários</button>
     </ng-container>
 
+    <!-- Menu para OPERADOR -->
+    <ng-container *ngIf="authService.isOperador()">
+      <button routerLink="/vendas" routerLinkActive="active">🛒 Vendas</button>
+    </ng-container>
+
     <!-- Menu para todos logados -->
     <button routerLink="/relatorios" routerLinkActive="active">📊 Relatórios</button>
   </nav>

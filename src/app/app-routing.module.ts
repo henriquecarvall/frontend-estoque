@@ -11,6 +11,7 @@ import { AdminGuard } from './guards/admin.guard';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { AdicionarUsuarioComponent } from './adicionar-usuario/adicionar-usuario.component';
 import { EditarUsuarioComponent } from './editar-usuario/editar-usuario.component';
+import { VendasComponent } from './vendas/vendas.component';
 
 const routes: Routes = [
 { path: 'login', component: LoginComponent },
@@ -25,6 +26,8 @@ const routes: Routes = [
 { path: 'usuarios', component: UsuariosComponent, canActivate: [AdminGuard] },
 { path: 'adicionar-usuario', component: AdicionarUsuarioComponent, canActivate: [AdminGuard] },
 { path: 'editar-usuario/:id', component: EditarUsuarioComponent, canActivate: [AdminGuard] },
+
+{ path: 'vendas', component: VendasComponent, canActivate: [AuthGuard] },
 
 { path: '**', redirectTo: '' }
 ];

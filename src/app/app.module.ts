@@ -15,6 +15,7 @@ import { LoginComponent } from './login/login.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { AdicionarUsuarioComponent } from './adicionar-usuario/adicionar-usuario.component';
 import { EditarUsuarioComponent } from './editar-usuario/editar-usuario.component';
+import { VendasComponent } from './vendas/vendas.component';
 
 @NgModule({
 declarations: [
@@ -28,7 +29,8 @@ ToastComponent,
 LoginComponent,
 UsuariosComponent,
 AdicionarUsuarioComponent,
-EditarUsuarioComponent
+EditarUsuarioComponent,
+VendasComponent
 ],
 imports: [
 BrowserModule,

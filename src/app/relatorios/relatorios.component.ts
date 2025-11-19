@@ -40,12 +40,12 @@ constructor(
 
   get valorTotalEstoque() {
     return this.produtos.reduce((total, produto) =>
-      total + (produto.precoUnitario * produto.quantidadeEstoque), 0
+      total + ((produto.precoUnitario || 0) * (produto.quantidadeEstoque || 0)), 0
     );
   }
 
   get produtosEstoqueBaixo() {
-    return this.produtos.filter(produto => produto.quantidadeEstoque < 10);
+    return this.produtos.filter(produto => (produto.quantidadeEstoque || 0) < 10);
   }
 
   exportarRelatorio() {
@@ -58,9 +58,9 @@ constructor(
         codigo: p.codigo,
         nome: p.nome,
         categoria: p.categoria,
-        quantidadeEstoque: p.quantidadeEstoque,
-        precoUnitario: p.precoUnitario,
-        valorTotal: p.precoUnitario * p.quantidadeEstoque
+        quantidadeEstoque: p.quantidadeEstoque || 0,
+        precoUnitario: p.precoUnitario || 0,
+        valorTotal: (p.precoUnitario || 0) * (p.quantidadeEstoque || 0)
       }))
     };
 
