@@ -1,8 +1,34 @@
 <div class="relatorios-container">
   <h2>📊 Relatórios do Sistema</h2>
 
+  <!-- Filtros -->
+  <div class="filtros-section">
+    <h3>🔍 Filtros</h3>
+    <div class="filtros-grid">
+      <div class="filtro-group">
+        <label for="dataInicio">Data Início:</label>
+        <input type="date" id="dataInicio" [(ngModel)]="filtroDataInicio" (change)="aplicarFiltros()">
+      </div>
+
+      <div class="filtro-group">
+        <label for="dataFim">Data Fim:</label>
+        <input type="date" id="dataFim" [(ngModel)]="filtroDataFim" (change)="aplicarFiltros()">
+      </div>
+
+      <div class="filtro-group">
+        <label for="categoria">Categoria:</label>
+        <select id="categoria" [(ngModel)]="filtroCategoria" (change)="aplicarFiltros()">
+          <option value="">Todas as categorias</option>
+          <option *ngFor="let cat of categorias" [value]="cat">{{cat}}</option>
+        </select>
+      </div>
+
+      <button class="btn-limpar" (click)="limparFiltros()">🔄 Limpar Filtros</button>
+    </div>
+  </div>
+
   <div class="loading" *ngIf="carregando">
-    <div>📈 Carregando dados do sistema...</div>
+    📈 Carregando dados do sistema...
   </div>
 
   <div *ngIf="!carregando" class="dashboard">
@@ -12,7 +38,8 @@
         <div class="stat-icon">📦</div>
         <div class="stat-info">
           <h3>Total de Produtos</h3>
-          <span class="stat-value">{{ totalProdutos }}</span>
+          <span class="stat-value">{{ produtosFiltrados.length }}</span>
+          <small class="stat-desc">{{ filtroAtivo ? 'Filtrado' : 'Total no sistema' }}</small>
         </div>
       </div>
 
@@ -21,14 +48,43 @@
         <div class="stat-info">
           <h3>Valor Total em Estoque</h3>
           <span class="stat-value">R$ {{ valorTotalEstoque.toFixed(2) }}</span>
+          <small class="stat-desc">Valor total do estoque</small>
         </div>
       </div>
 
       <div class="stat-card">
         <div class="stat-icon">⚠️</div>
         <div class="stat-info">
-          <h3>Produtos com Estoque Baixo</h3>
+          <h3>Estoque Baixo</h3>
           <span class="stat-value">{{ produtosEstoqueBaixo.length }}</span>
+          <small class="stat-desc">< 10 unidades</small>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-info">
+          <h3>Valor Médio</h3>
+          <span class="stat-value">R$ {{ valorMedioProduto.toFixed(2) }}</span>
+          <small class="stat-desc">Por produto</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Produtos Mais Caros -->
+    <div class="top-produtos-section">
+      <h3>🏆 Top 5 Produtos Mais Valiosos</h3>
+      <div class="top-produtos-grid">
+        <div *ngFor="let produto of topProdutosValiosos; let i = index" class="top-produto-card">
+          <div class="rank">{{ i + 1 }}</div>
+          <div class="produto-info">
+            <strong>{{ produto.nome }}</strong>
+            <span class="categoria">{{ produto.categoria }}</span>
+          </div>
+          <div class="produto-valor">
+            <div class="valor">R$ {{ (produto.precoUnitario || 0).toFixed(2) }}</div>
+            <div class="estoque">{{ produto.quantidadeEstoque || 0 }} unidades</div>
+          </div>
         </div>
       </div>
     </div>
@@ -43,6 +99,7 @@
           <th>Nome</th>
           <th>Estoque</th>
           <th>Preço</th>
+          <th>Valor Total</th>
           <th>Categoria</th>
         </tr>
         </thead>
@@ -52,6 +109,7 @@
           <td>{{ produto.nome }}</td>
           <td class="estoque-baixo">{{ produto.quantidadeEstoque || 0 }}</td>
           <td>R$ {{ (produto.precoUnitario || 0).toFixed(2) }}</td>
+          <td>R$ {{ ((produto.precoUnitario || 0) * (produto.quantidadeEstoque || 0)).toFixed(2) }}</td>
           <td>{{ produto.categoria }}</td>
         </tr>
         </tbody>
@@ -60,35 +118,55 @@
 
     <!-- Lista Completa de Produtos -->
     <div class="todos-produtos-section">
-      <h3>📦 Todos os Produtos</h3>
+      <div class="section-header">
+        <h3>📦 Todos os Produtos ({{ produtosFiltrados.length }})</h3>
+        <div class="filtro-info" *ngIf="filtroAtivo">
+          <small>Filtros ativos: {{ filtroCategoria || 'Todas categorias' }} | {{ filtroDataInicio ? (filtroDataInicio + ' a ' + filtroDataFim) : 'Todo período' }}</small>
+        </div>
+      </div>
+
       <table class="tabela-produtos">
         <thead>
         <tr>
-          <th>Código</th>
-          <th>Nome</th>
-          <th>Estoque</th>
-          <th>Preço Unitário</th>
+          <th (click)="ordenarPor('codigo')" class="ordenavel">
+            Código {{ colunaOrdenada === 'codigo' ? (ordemAscendente ? '↑' : '↓') : '' }}
+          </th>
+          <th (click)="ordenarPor('nome')" class="ordenavel">
+            Nome {{ colunaOrdenada === 'nome' ? (ordemAscendente ? '↑' : '↓') : '' }}
+          </th>
+          <th (click)="ordenarPor('quantidadeEstoque')" class="ordenavel">
+            Estoque {{ colunaOrdenada === 'quantidadeEstoque' ? (ordemAscendente ? '↑' : '↓') : '' }}
+          </th>
+          <th (click)="ordenarPor('precoUnitario')" class="ordenavel">
+            Preço Unit. {{ colunaOrdenada === 'precoUnitario' ? (ordemAscendente ? '↑' : '↓') : '' }}
+          </th>
           <th>Valor Total</th>
-          <th>Categoria</th>
+          <th (click)="ordenarPor('categoria')" class="ordenavel">
+            Categoria {{ colunaOrdenada === 'categoria' ? (ordemAscendente ? '↑' : '↓') : '' }}
+          </th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let produto of produtos" [class.estoque-baixo]="(produto.quantidadeEstoque || 0) < 10">
+        <tr *ngFor="let produto of produtosFiltrados"
+            [class.estoque-baixo]="(produto.quantidadeEstoque || 0) < 10">
           <td>{{ produto.codigo }}</td>
           <td>{{ produto.nome }}</td>
           <td>{{ produto.quantidadeEstoque || 0 }}</td>
           <td>R$ {{ (produto.precoUnitario || 0).toFixed(2) }}</td>
-          <td>R$ {{ ((produto.precoUnitario || 0) * (produto.quantidadeEstoque || 0)).toFixed(2) }}</td>
-          <td>{{ produto.categoria }}</td>
+          <td><strong>R$ {{ ((produto.precoUnitario || 0) * (produto.quantidadeEstoque || 0)).toFixed(2) }}</strong></td>
+          <td><span class="categoria-badge">{{ produto.categoria }}</span></td>
         </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Botão Exportar -->
+    <!-- Botões de Ação -->
     <div class="acoes-relatorio">
       <button class="btn-exportar" (click)="exportarRelatorio()">
         📥 Exportar Relatório JSON
+      </button>
+      <button class="btn-dashboard" routerLink="/dashboard">
+        📈 Ver Dashboard Completo
       </button>
     </div>
   </div>
